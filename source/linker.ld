@@ -4,8 +4,8 @@ ENTRY (start)
 SECTIONS{
     . = 0x00100000;
 
-    .text :{
-        code = .; _code = .; __code = .;
+    .text ALIGN (0x1000) : {
+        *(.multiboot_header)
         *(.text)
         *(.rodata)
     }

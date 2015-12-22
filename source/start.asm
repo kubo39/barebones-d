@@ -8,10 +8,10 @@ FLAGS              equ        MODULEALIGN | MEMINFO
 MAGIC              equ        0x1BADB002
 CHECKSUM           equ        -(MAGIC + FLAGS)
 
-section .text      ; Next is the Grub Multiboot Header
+section .text
+    align 4
 
-align 4
-MultiBootHeader:
+multiboot:
        dd MAGIC
        dd FLAGS
        dd CHECKSUM
