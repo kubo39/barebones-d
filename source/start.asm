@@ -5,16 +5,31 @@ extern start_ctors, end_ctors, start_dtors, end_dtors
 MODULEALIGN        equ        1<<0
 MEMINFO            equ        1<<1
 FLAGS              equ        MODULEALIGN | MEMINFO
-MAGIC              equ        0x1BADB002
+MAGIC              equ        0xe85250d6
 CHECKSUM           equ        -(MAGIC + FLAGS)
+
 
 section .text
     align 4
 
 multiboot:
-       dd MAGIC
-       dd FLAGS
-       dd CHECKSUM
+       ;; dd MAGIC
+       ;; dd FLAGS
+       ;; dd CHECKSUM
+header_start:
+    dd MAGIC                     ; magic number (multiboot 2)
+    dd 0                         ; architecture 0 (protected mode i386)
+    dd header_end - header_start ; header length
+    ; checksum
+    dd 0x100000000 - (MAGIC + 0 + (header_end - header_start))
+
+    ; insert optional multiboot tags here
+
+    ; required end tag
+    dw 0    ; type
+    dw 0    ; flags
+    dd 8    ; size
+header_end:
 
 STACKSIZE equ 0x4000  ; 16 KiB if you're wondering
 
