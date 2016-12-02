@@ -13,9 +13,6 @@ section .text
     align 4
 
 multiboot:
-       ;; dd MAGIC
-       ;; dd FLAGS
-       ;; dd CHECKSUM
 header_start:
     dd MAGIC                     ; magic number (multiboot 2)
     dd 0                         ; architecture 0 (protected mode i386)
@@ -44,12 +41,12 @@ static_ctors_loop:
    jb .body
 
 start:
-       mov esp, STACKSIZE+stack
+    mov esp, STACKSIZE+stack
 
-       push eax
-       push ebx
+    push eax
+    push ebx
 
-       call kmain
+    call kmain
 
 static_dtors_loop:
    mov ebx, start_dtors
@@ -63,11 +60,11 @@ static_dtors_loop:
 
 
 cpuhalt:
-       hlt
-       jmp cpuhalt
+    hlt
+    jmp cpuhalt
 
 section .bss
 align 32
 
 stack:
-      resb      STACKSIZE
+    resb      STACKSIZE
