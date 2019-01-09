@@ -1,6 +1,16 @@
 arch ?= i386
+target := $(arch)-unknown-linux-gnu
 iso := build/os-$(arch).iso
 kernel := build/kernel-$(arch).bin
+
+dflags = \
+	-betterC \
+	-c \
+	-disable-red-zone \
+	-mtriple=$(target) \
+	-nodefaultlib \
+	-nogc \
+	-release
 
 .PHONY: all clean run iso
 
@@ -10,7 +20,7 @@ clean:
 	@rm -rf build
 
 run: $(iso)
-	@qemu-system-i386 -hda $(iso)
+	@qemu-system-i386 -drive format=raw,file=$(iso)
 
 iso: $(iso)
 
@@ -24,6 +34,6 @@ $(iso): $(kernel)
 $(kernel):
 	@mkdir build
 	@nasm -f elf -o build/start.o source/start.asm
-	@dmd -O -release -m32 -boundscheck=off -c source/kmain.d -ofbuild/kmain.o
-	@ld --gc-section -m elf_i386 -T source/linker.ld -o $(kernel) build/start.o build/kmain.o
+	@ldc2 -c -of=build/kmain.o $(dflags) source/kmain.d
+	@ld -nostdlib -nodefaultlibs -n --gc-section -m elf_i386 -T source/linker.ld -o $(kernel) build/start.o build/kmain.o
 
