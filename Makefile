@@ -10,7 +10,8 @@ dflags = \
 	-mtriple=$(target) \
 	-nodefaultlib \
 	-nogc \
-	-release
+	-release \
+	-relocation-model=static
 
 .PHONY: all clean run iso
 
@@ -34,6 +35,6 @@ $(iso): $(kernel)
 $(kernel):
 	@mkdir build
 	@nasm -f elf -o build/start.o source/start.asm
-	@ldc2 -c -of=build/kmain.o $(dflags) source/kmain.d
+	@ldc2 -of=build/kmain.o $(dflags) source/kmain.d
 	@ld -nostdlib -nodefaultlibs -n --gc-section -m elf_i386 -T source/linker.ld -o $(kernel) build/start.o build/kmain.o
 
